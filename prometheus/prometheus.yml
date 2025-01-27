@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 15s
+
+#scrape_configs:
+#  - job_name: 'netdata'
+#    static_configs:
+#      - targets: ['49.12.42.215:19999']
+
+rule_files:
+  - '/etc/prometheus/alert.rules.yml'
+
+scrape_configs:
+  - job_name: 'netdata'
+    metrics_path: '/api/v1/allmetrics?format=prometheus'
+    static_configs:
+      - targets: ['netdata:19999']
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['49.12.42.215:9100']
+#web:
+#  listen-address: ":9090"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+

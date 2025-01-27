@@ -1,0 +1,67 @@
+version: '3.8'
+services:
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    ports:
+      - "19999:19999"
+    volumes:
+      - netdata_config:/etc/netdata
+      - netdata_data:/var/lib/netdata
+    networks:
+      - monitoring
+#    command:
+#      - --exporter-prometheus-enable
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - monitoring
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml  # Mapea el archivo de configuración
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring
+
+volumes:
+  netdata_config:
+  netdata_data:
+  grafana_data:
+
+networks:
+  monitoring:
+

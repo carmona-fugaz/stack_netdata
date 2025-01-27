@@ -1,0 +1,41 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'default-receiver'
+  routes:
+    - match:
+        severity: 'warning'
+      receiver: 'telegram'
+    - match:
+        severity: 'critical'
+      receiver: 'discord'
+
+receivers:
+  - name: 'default-receiver'
+    webhook_configs:
+      - url: 'http://localhost:5000'  # Reemplaza con tu webhook si es necesario
+
+  - name: 'telegram'
+    telegram_configs:
+      - bot_token: '7548600846:AAE_FizGmZycjOBlOsP6wV00siKRaohC95w'
+        chat_id: "901311411"
+        message: |
+          🛑 *Alerta* 🛑
+          {{ range .Alerts }}
+          *Alerta:* {{ .Annotations.summary }}
+          *Descripción:* {{ .Annotations.description }}
+          *Estado:* {{ .Status }}
+          *Instancia:* {{ .Labels.instance }}
+          {{ end }}
+
+  - name: 'discord'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/1322546369583513640/Did_5xGGmwFKDkZkVEg5bXJqIwHwPBqsEOPJhHUJIyco1lvvAGxdCrCWH2OcbdLQsQr-'
+        send_resolved: true
+      http_config:
+        method: POST
+        body: |
+          {
+            "content": "**Alerta de Prometheus**\n*Alerta:* {{ .Annotations.summary }}\n*Descripción:* {{ .Annotations.description }}\n*Estado:* {{ .Status }}\n*Instancia:* {{ .Labels.instance }}"
+          }
