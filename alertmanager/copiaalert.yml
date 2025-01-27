@@ -18,8 +18,8 @@ receivers:
 
   - name: 'telegram'
     telegram_configs:
-      - bot_token: '7548600846:AAE_FizGmZycjOBlOsP6wV00siKRaohC95w'
-        chat_id: "901311411"
+      - bot_token: ''
+        chat_id: ""
         message: |
           🛑 *Alerta* 🛑
           {{ range .Alerts }}
@@ -31,7 +31,7 @@ receivers:
 
   - name: 'discord'
     webhook_configs:
-      - url: 'https://discord.com/api/webhooks/1322546369583513640/Did_5xGGmwFKDkZkVEg5bXJqIwHwPBqsEOPJhHUJIyco1lvvAGxdCrCWH2OcbdLQsQr-'
+      - url: 'url_webhook_discord'
         send_resolved: true
       http_config:
         method: POST
