@@ -1,2 +1,2 @@
 # stack_netdata
-Proyecto de monitorización 
+Proyecto de monitorización de alertas
